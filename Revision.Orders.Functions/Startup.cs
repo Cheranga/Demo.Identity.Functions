@@ -3,10 +3,10 @@ using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Revision.Customers.Functions;
+using Revision.Orders.Functions;
 
 [assembly:FunctionsStartup(typeof(Startup))]
-namespace Revision.Customers.Functions
+namespace Revision.Orders.Functions
 {
     public class Startup : FunctionsStartup
     {
