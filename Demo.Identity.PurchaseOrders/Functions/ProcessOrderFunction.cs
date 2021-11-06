@@ -2,11 +2,12 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
+using Demo.Identity.PurchaseOrders.Models;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Revision.Orders.Functions.API
+namespace Demo.Identity.PurchaseOrders.Functions
 {
     public class ProcessOrderFunction
     {
@@ -21,8 +22,10 @@ namespace Revision.Orders.Functions.API
         public async Task RunAsync([ServiceBusTrigger("%ServiceBusConfig:Topic%", "%ServiceBusConfig:Subscription%", Connection = "ServiceBusConnection")] ServiceBusReceivedMessage message)
         {
             var messageContent = Encoding.UTF8.GetString(message.Body);
+
+            var purchaseOrder = JsonConvert.DeserializeObject<PurchaseOrder>(messageContent);
             
-            _logger.LogInformation($"Input message: {messageContent}");
+            _logger.LogInformation("Received purchase order: {@PurchaseOrder}", purchaseOrder);
             await Task.Delay(TimeSpan.FromSeconds(2));
         }
     }

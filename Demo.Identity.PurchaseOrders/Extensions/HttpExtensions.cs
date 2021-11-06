@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace Revision.Orders.Functions.Extensions
+namespace Demo.Identity.PurchaseOrders.Extensions
 {
     public static class HttpExtensions
     {

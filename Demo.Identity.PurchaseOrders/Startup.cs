@@ -5,14 +5,17 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Revision.Orders.Functions;
-using Revision.Orders.Functions.Configs;
-using Revision.Orders.Functions.Infrastructure;
-using Revision.Orders.Functions.Services;
+using Demo.Identity.PurchaseOrders;
+using Demo.Identity.PurchaseOrders.Configs;
+using Demo.Identity.PurchaseOrders.Infrastructure;
+using Demo.Identity.PurchaseOrders.Services;
+using Microsoft.ApplicationInsights.Extensibility;
+using Serilog;
+using Serilog.Events;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 
-namespace Revision.Orders.Functions
+namespace Demo.Identity.PurchaseOrders
 {
     public class Startup : FunctionsStartup
     {
@@ -21,6 +24,7 @@ namespace Revision.Orders.Functions
             var configuration = GetConfiguration(builder);
             var services = builder.Services;
 
+            RegisterLogging(services);
             RegisterConfigurations(services, configuration);
             RegisterServices(services, configuration);
         }
@@ -64,6 +68,20 @@ namespace Revision.Orders.Functions
             {
                 var config = provider.GetRequiredService<IOptionsSnapshot<ServiceBusConfig>>().Value;
                 return config;
+            });
+        }
+
+        private void RegisterLogging(IServiceCollection services)
+        {
+            services.AddLogging(builder =>
+            {
+                var logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+                    .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                    .WriteTo.ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces, LogEventLevel.Debug)
+                    .CreateLogger();
+
+                builder.AddSerilog(logger);
             });
         }
     }

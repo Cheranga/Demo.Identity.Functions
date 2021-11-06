@@ -1,4 +1,4 @@
-namespace Revision.Orders.Functions.Configs
+namespace Demo.Identity.PurchaseOrders.Configs
 {
     public class ServiceBusConfig
     {

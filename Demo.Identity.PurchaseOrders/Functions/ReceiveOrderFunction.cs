@@ -1,15 +1,14 @@
-using System;
 using System.Net;
 using System.Threading.Tasks;
+using Demo.Identity.PurchaseOrders.Extensions;
+using Demo.Identity.PurchaseOrders.Models;
+using Demo.Identity.PurchaseOrders.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Revision.Orders.Functions.Extensions;
-using Revision.Orders.Functions.Models;
-using Revision.Orders.Functions.Services;
 
-namespace Revision.Orders.Functions.API
+namespace Demo.Identity.PurchaseOrders.Functions
 {
     public class ReceiveOrderFunction
     {

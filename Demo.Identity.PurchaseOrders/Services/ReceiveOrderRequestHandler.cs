@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
+using Demo.Identity.PurchaseOrders.Infrastructure;
+using Demo.Identity.PurchaseOrders.Models;
 using Microsoft.Extensions.Logging;
-using Revision.Orders.Functions.Infrastructure;
-using Revision.Orders.Functions.Models;
 
-namespace Revision.Orders.Functions.Services
+namespace Demo.Identity.PurchaseOrders.Services
 {
     public interface IReceiveOrderRequestHandler
     {

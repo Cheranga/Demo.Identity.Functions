@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Revision.Orders.Functions.Models
+namespace Demo.Identity.PurchaseOrders.Models
 {
     public class PurchaseOrder
     {

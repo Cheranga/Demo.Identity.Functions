@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Revision.Orders.Functions", "Revision.Orders.Functions\Revision.Orders.Functions.csproj", "{81E340B6-26B2-45D5-BCFD-9E347425D046}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Identity.PurchaseOrders", "Demo.Identity.PurchaseOrders\Demo.Identity.PurchaseOrders.csproj", "{81E340B6-26B2-45D5-BCFD-9E347425D046}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

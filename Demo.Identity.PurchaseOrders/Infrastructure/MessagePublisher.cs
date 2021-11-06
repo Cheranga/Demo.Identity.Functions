@@ -3,11 +3,11 @@ using System.Net.Mime;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
+using Demo.Identity.PurchaseOrders.Configs;
+using Demo.Identity.PurchaseOrders.Models;
 using Microsoft.Extensions.Logging;
-using Revision.Orders.Functions.Configs;
-using Revision.Orders.Functions.Models;
 
-namespace Revision.Orders.Functions.Infrastructure
+namespace Demo.Identity.PurchaseOrders.Infrastructure
 {
     public class MessagePublisher : IMessagePublisher
     {

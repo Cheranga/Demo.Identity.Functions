@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Revision.Orders.Functions.Infrastructure
+namespace Demo.Identity.PurchaseOrders.Infrastructure
 {
     public interface IMessagePublisher
     {
