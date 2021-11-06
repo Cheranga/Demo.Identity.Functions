@@ -1,0 +1,33 @@
+name: $(Date:yyyyMMdd).$(Rev:r)
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - feature/*
+
+  paths:
+    exclude:
+     - doc
+     - ReadME.md
+
+pr:
+  branches:
+    include:
+    - master
+
+variables:
+- name: vmImage
+  value: 'windows-latest'
+
+stages:
+- stage: Build
+  jobs:
+  - job: 'Build'
+    pool:
+      vmImage: ${{variables.vmImage}}
+    steps:
+    - template: 'build.yaml'
+      parameters:        
+        projectFiles: '**/*.csproj'
