@@ -1,0 +1,88 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "functionAppName": {
+        "type": "string",
+        "defaultValue": "TBD"
+      },      
+      "appInsightsKey": {
+        "type": "securestring",
+        "defaultValue": "TBD"
+      },
+      "storageAccountConnectionString": {
+        "type": "securestring",
+        "defaultValue": "TBD"
+      }
+    },
+    "functions": [],
+    "variables": {
+      "keyVaultName": "[concat('kv-', replace(parameters('functionAppName'),'-',''))]",
+      "deployedFunctionAppName": "[concat('fn-',parameters('functionAppName'))]"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.KeyVault/vaults",
+        "apiVersion": "2016-10-01",
+        "name": "[variables('keyVaultName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "enabledForDeployment": true,
+          "enabledForTemplateDeployment": true,
+          "enabledForDiskEncryption": true,          
+          "tenantId": "[reference(resourceId('Microsoft.Web/sites', variables('deployedFunctionAppName')),'2019-08-01', 'full').identity.tenantId]",
+          "accessPolicies": [
+            {              
+              "tenantId": "[reference(resourceId('Microsoft.Web/sites', variables('deployedFunctionAppName')),'2019-08-01', 'full').identity.tenantId]",             
+              "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('deployedFunctionAppName')),'2019-08-01', 'full').identity.principalId]",
+              "permissions": {
+                "secrets": [
+                  "get",
+                  "list"
+                ]
+              }
+            },
+            {
+              "tenantId": "[reference(resourceId('Microsoft.Web/sites/slots', variables('deployedFunctionAppName'),'Staging'),'2019-08-01', 'full').identity.tenantId]",             
+              "objectId": "[reference(resourceId('Microsoft.Web/sites/slots', variables('deployedFunctionAppName'), 'Staging'),'2019-08-01', 'full').identity.principalId]",
+              "permissions": {
+                "secrets": [
+                  "get",
+                  "list"
+                ]
+              }
+            }
+          ],
+          "sku": {
+            "name": "standard",
+            "family": "A"
+          }
+        },
+        "resources": [
+          {
+            "type": "secrets",
+            "name": "appInsightsKeySecret",
+            "apiVersion": "2016-10-01",
+            "dependsOn": [
+              "[resourceId('Microsoft.KeyVault/vaults/', variables('keyVaultName'))]"
+            ],
+            "properties": {
+              "value": "[parameters('appInsightsKey')]"
+            }
+          },
+          {
+            "type": "secrets",
+            "name": "storageAccountConnectionStringSecret",
+            "apiVersion": "2016-10-01",
+            "dependsOn": [
+              "[resourceId('Microsoft.KeyVault/vaults/', variables('keyVaultName'))]"
+            ],
+            "properties": {
+              "value": "[parameters('storageAccountConnectionString')]"
+            }
+          }                    
+        ]
+      }
+    ],
+    "outputs": {}
+  }
