@@ -19,6 +19,8 @@ variables:
     value: "sgcc$(funcAppName)$(environmentName)"    
   - name: sgType
     value: Standard_GRS    
+  - name: sgTier
+    value: Standard
   - name: planName
     value: "plan-$(funcAppName)-$(environmentName)"
   - name: planSku
