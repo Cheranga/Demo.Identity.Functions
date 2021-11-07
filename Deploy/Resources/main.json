@@ -129,7 +129,7 @@
                 },
                 "parameters": {
                     "functionAppName": {
-                        "value": "[concat('fn-', parameters('funcAppName'),'-', parameters('environmentName'))]"
+                        "value": "[concat(parameters('funcAppName'),'-', parameters('environmentName'))]"
                     },                    
                     "appInsightsKey": {
                         "value": "[reference(variables('appInsightsDeployment')).outputs.appInsightsKey.value]"
@@ -161,7 +161,7 @@
                         "value": "[parameters('planName')]"
                     },
                     "keyVaultName": {
-                        "value": "[concat('kv-', parameters('funcAppName'), parameters('environmentName'))]"
+                        "value": "[concat('kv-', parameters('funcAppName'),'-', parameters('environmentName'))]"
                     },
                     "topicName": {
                         "value": "customer-orders"

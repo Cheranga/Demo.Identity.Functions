@@ -17,7 +17,7 @@
     },
     "functions": [],
     "variables": {
-      "keyVaultName": "[concat('kv-', replace(parameters('functionAppName'),'-',''))]"      
+      "keyVaultName": "[concat('kv-', parameters('functionAppName'))]"
     },
     "resources": [
       {
