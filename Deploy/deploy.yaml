@@ -10,8 +10,7 @@ steps:
       azureResourceManagerConnection: "$(azureSubscription)"
       location: "$(rgLocation)"
       deploymentMode: "Incremental"
-      csmFile: "$(Pipeline.Workspace)/deploy/ResourceGroup/template.json"
-      csmParametersFile: "$(Pipeline.Workspace)/deploy/ResourceGroup/template.parameters.json"
+      csmFile: "$(Pipeline.Workspace)/deploy/ResourceGroup/template.json"      
       overrideParameters: |
         -rgName "$(rgName)" 
         -rgLocation "$(rgLocation)" 

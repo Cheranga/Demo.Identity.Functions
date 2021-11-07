@@ -1,0 +1,37 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.1",
+    "parameters": {
+      "rgName": {
+        "type": "string",
+        "metadata": {
+          "description": "Name of the Resource Group to create"
+        }
+      },
+      "rgLocation": {
+        "type": "string",
+        "defaultValue": "Australia Southeast",
+        "metadata": {
+          "description": "Location for the Resource Group"
+        }
+      },
+      "createNewRg": {
+        "type": "bool",
+        "defaultValue": true,
+        "metadata": {
+          "description": "A condition to create a new resource group or not."
+        }
+      }
+    },    
+    "resources": [
+      {
+        "condition":"[parameters('createNewRg')]",
+        "type": "Microsoft.Resources/resourceGroups",
+        "apiVersion": "2018-05-01",
+        "location": "[parameters('rgLocation')]",
+        "name": "[parameters('rgName')]",      
+        "properties": {}
+      }
+    ],
+    "outputs": {}
+  }
