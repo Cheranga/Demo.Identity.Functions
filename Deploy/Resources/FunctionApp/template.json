@@ -45,7 +45,7 @@
         "storageAccountConnectionStringSecret": "[concat('@Microsoft.KeyVault(SecretUri=https://', parameters('keyVaultName'), '.vault.azure.net/secrets/storageAccountConnectionStringSecret/)')]",
         "timeZone": "AUS Eastern Standard Time"
     },
-    "resources": [
+    "resources": [        
         {
             "apiVersion": "2015-08-01",
             "type": "Microsoft.Web/sites",

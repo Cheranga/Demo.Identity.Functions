@@ -30,29 +30,7 @@
           "enabledForDeployment": true,
           "enabledForTemplateDeployment": true,
           "enabledForDiskEncryption": true,          
-          "tenantId": "[reference(resourceId('Microsoft.Web/sites', variables('deployedFunctionAppName')),'2019-08-01', 'full').identity.tenantId]",
-          "accessPolicies": [
-            {              
-              "tenantId": "[reference(resourceId('Microsoft.Web/sites', variables('deployedFunctionAppName')),'2019-08-01', 'full').identity.tenantId]",             
-              "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('deployedFunctionAppName')),'2019-08-01', 'full').identity.principalId]",
-              "permissions": {
-                "secrets": [
-                  "get",
-                  "list"
-                ]
-              }
-            },
-            {
-              "tenantId": "[reference(resourceId('Microsoft.Web/sites/slots', variables('deployedFunctionAppName'),'Staging'),'2019-08-01', 'full').identity.tenantId]",             
-              "objectId": "[reference(resourceId('Microsoft.Web/sites/slots', variables('deployedFunctionAppName'), 'Staging'),'2019-08-01', 'full').identity.principalId]",
-              "permissions": {
-                "secrets": [
-                  "get",
-                  "list"
-                ]
-              }
-            }
-          ],
+          "tenantId": "[subscription().tenantId]",
           "sku": {
             "name": "standard",
             "family": "A"

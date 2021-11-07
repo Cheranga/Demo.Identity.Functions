@@ -138,10 +138,7 @@
                         "value": "[reference(variables('storageAccountDeployment')).outputs.storageAccountConnectionString.value]"
                     }
                 }
-            },
-            "dependsOn": [                
-                "[variables('funcAppDeployment')]"
-            ]
+            }
         },
         {
             "name": "[variables('funcAppDeployment')]",
@@ -180,7 +177,8 @@
             "dependsOn": [
                 "[variables('storageAccountDeployment')]",
                 "[variables('appInsightsDeployment')]",
-                "[variables('aspDeployment')]"
+                "[variables('aspDeployment')]",
+                "[variables('keyVaultDeployment')]"
             ]
         }
     ],
