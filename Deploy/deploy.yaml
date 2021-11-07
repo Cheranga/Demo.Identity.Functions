@@ -47,3 +47,24 @@ steps:
         $token = az storage container generate-sas --name $(sharedContainerName) --expiry $expireTime --permissions r --output tsv --connection-string $connection
 
         Write-Host "##vso[task.setvariable variable=storageSasToken]$token"
+
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: "Provision resources"
+    inputs:
+      azureResourceManagerConnection: "$(azureSubscription)"
+      deploymentName: "main-$(funcAppName)-$(environmentName)-${{parameters.buildNumber}}-deployment"
+      deploymentScope: "Resource Group"
+      deploymentMode: "Incremental"      
+      location: "$(rgLocation)"
+      action: "Create Or Update Resource Group"
+      resourceGroupName: "$(rgName)"
+      csmFile: "$(Pipeline.Workspace)/deploy/main.json"
+      overrideParameters: |
+        -environmentName "$(environmentName)" 
+        -templateSas "$(storageSasToken)" 
+        -buildNumber "${{parameters.buildNumber}}" 
+        -sharedStorageName "$(sharedStorageName)" 
+        -sharedStorageContainer "$(sharedContainerName)" 
+        -sgName "$(sgName)" 
+        -sgType "$(sgType)" 
+        

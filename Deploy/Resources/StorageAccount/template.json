@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "rgName": {
+            "type": "string",
+            "defaultValue": "TBD"
+        },
+        "rgLocation": {
+            "type": "string",
+            "defaultValue": "TBD"
+        },
+        "sgName": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account name"
+            }
+        },
+        "sgType": {
+            "type": "string",
+            "defaultValue": "Standard_GRS"
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('sgName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2015-06-15",
+            "location": "[parameters('rgLocation')]",
+            "tags": {
+                "displayName": "[parameters('sgName')]"
+            },
+            "properties": {
+                "accountType": "[parameters('sgType')]"
+            }
+        }
+    ],
+    "outputs": {
+        "storageAccountConnectionString": {
+            "type": "string",
+            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('sgName'), ';AccountKey=', listKeys(resourceId(parameters('rgName'),'Microsoft.Storage/storageAccounts', parameters('sgName')), '2019-04-01').keys[0].value,';EndpointSuffix=core.windows.net')]"
+        }
+    }
+}
