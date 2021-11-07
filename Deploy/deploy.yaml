@@ -59,8 +59,7 @@ steps:
       action: "Create Or Update Resource Group"
       resourceGroupName: "$(rgName)"
       csmFile: "$(Pipeline.Workspace)/deploy/main.json"
-      overrideParameters: |
-        -environmentName "$(environmentName)" 
+      overrideParameters: |        
         -templateSas "$(storageSasToken)" 
         -buildNumber "${{parameters.buildNumber}}" 
         -sharedStorageName "$(sharedStorageName)" 

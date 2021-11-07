@@ -1,11 +1,7 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "environmentName": {
-            "type": "string",
-            "defaultValue": "TBD"
-        },
+    "parameters": {        
         "templateSas": {
             "type": "securestring",
             "defaultValue": "TBD"
@@ -13,7 +9,7 @@
         "buildNumber": {
             "type": "string",
             "defaultValue": "TBD"
-        },        
+        },
         "sharedStorageName": {
             "type": "string",
             "defaultValue": "TBD"
@@ -23,31 +19,40 @@
             "defaultValue": "TBD"
         },
         "sgName": {
-            "type": "string",            
+            "type": "string",
             "defaultValue": "TBD"
         },
-        "sgType":{
+        "sgType": {
             "type": "string",
             "defaultValue": "TBD"
         }
     },
     "functions": [],
-    "variables": {},
+    "variables": {
+        "templateUri": "[concat('https://',parameters('sharedStorageName'),'.blob.core.windows.net/',parameters('sharedStorageContainer'))]",
+        "storageAccountDeployment": "[concat(parameters('sgName'),'-',parameters('buildNumber'),'-deployment')]"
+    },
     "resources": [
         {
-            "name": "[parameters('sgName')]",
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2021-04-01",
-            "tags": {
-                "displayName": "[parameters('sgName')]"
-            },
-            "location": "[resourceGroup().location]",
-            "kind": "StorageV2",
-            "sku": {
-                "name": "[parameters('sgType')]",
-                "tier": "Standard"
+            "name": "[variables('storageAccountDeployment')]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('templateUri'),'/StorageAccount/template.json','?', parameters('templateSas'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {                    
+                    "sgName": {
+                        "value": "[parameters('sgName')]"
+                    },
+                    "sgType": {
+                        "value": "[parameters('sgType')]"
+                    }
+                }
             }
-        }       
+        }
     ],
     "outputs": {}
 }
