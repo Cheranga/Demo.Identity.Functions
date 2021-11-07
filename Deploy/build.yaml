@@ -29,5 +29,9 @@ steps:
 
 - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
   displayName: Create function app artifact
-  artifact: funcapp  
+  artifact: funcapp 
+
+- publish: $(Build.Repository.LocalPath)/Deploy/Resources
+  displayName: Create ARM template artifacts
+  artifact: deploy      
 
