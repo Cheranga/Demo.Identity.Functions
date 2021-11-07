@@ -38,13 +38,15 @@ steps:
       scriptLocation: "inlineScript"
       inlineScript: |    
         az deployment group create `
-        --name purchase-orders-$(Build.BuildNumber) `
+        --name main-purchase-orders-$(Build.BuildNumber) `
         --resource-group "$(rgName)" `
         --template-file "$(Pipeline.Workspace)/deploy/main.bicep" `
         --parameters "buildNumber=$(Build.BuildNumber)" `
         "sgName=$(sgName)" `
         "storageSku=$(sgType)" `
-        "storageSkuTier=$(sgTier)"
+        "storageSkuTier=$(sgTier)" `
+        "functionAppName=$(funcAppName)" `
+        "environmentName=$(environmentName)"
 
 
         
