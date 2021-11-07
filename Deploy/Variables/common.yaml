@@ -14,7 +14,7 @@ variables:
   - name: sharedStorageName
     value: "sgccsharedpurorders$(environmentName)"
   - name: sharedContainerName
-    value: "ARM-Templates-$(funcAppName)"
+    value: "arm-templates-$(funcAppName)"
   - name: sgName
     value: "sg$(funcAppName)$(environmentName)"    
   - name: sgType
