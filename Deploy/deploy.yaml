@@ -37,7 +37,7 @@ steps:
       scriptType: "pscore"
       scriptLocation: "inlineScript"
       inlineScript: |
-        az storage account create -n "$(sharedStorageName)" -g "$(rgName)" -l "$(rgLocation)" 
+        az storage account create -n "$(sharedStorageName)" --sku "$(sgType)" -g "$(rgName)" -l "$(rgLocation)" 
         az storage container create -n "$(sharedContainerName)" --account-name "$(sharedStorageName)" --auth-mode login 
         $accountKey = (az storage account keys list -g "$(rgName)" -n "$(sharedStorageName)" | ConvertFrom-Json)[0].value
         az storage blob upload-batch --source "$(Pipeline.Workspace)/deploy/" --pattern *.json --destination "$(sharedContainerName)" --account-name $(sharedStorageName) --account-key $accountKey
