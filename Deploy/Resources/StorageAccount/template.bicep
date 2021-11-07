@@ -1,6 +1,6 @@
 param sgName string
-param storageSkuName string
-param storageSkuTier string
+param sku string
+param tier string
 
 var storageKind = 'StorageV2'
 
@@ -9,8 +9,8 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   location: resourceGroup().location
   kind: storageKind
   sku: {
-    name: storageSkuName
-    tier: storageSkuTier
+    name: sku
+    tier: tier
   }
 }
 

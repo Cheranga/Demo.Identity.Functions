@@ -11,7 +11,7 @@ param sgName string
   'Standard_LRS'
   'Standard_GRS'
 ])
-param storageSkuName string
+param storageSku string
 
 @description('SKU tier for storage account')
 param storageSkuTier string
@@ -20,7 +20,7 @@ module storageAccountModule './StorageAccount/template.bicep' = {
   name: 'storageAccount-${buildNumber}'
   params: {
     sgName: sgName
-    storageSkuName: storageSkuName
-    storageSkuTier: storageSkuTier
+    sku: storageSku
+    tier: storageSkuTier
   }
 }

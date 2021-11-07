@@ -43,7 +43,7 @@ steps:
         --template-file "$(Pipeline.Workspace)/deploy/main.bicep" `
         --parameters "buildNumber=$(Build.BuildNumber)" `
         "sgName=$(sgName)" `
-        "storageSkuName=$(sgType)" `
+        "storageSku=$(sgType)" `
         "storageSkuTier=$(sgTier)"
 
 
