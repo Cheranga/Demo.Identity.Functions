@@ -37,6 +37,10 @@
         "serviceBusName":{
             "type": "string",
             "defaultValue": "TBD"
+        },
+        "storageAccountConnectionString": {
+            "type": "securestring",
+            "defaultValue": "TBD"
         }
     },
     "variables": {
@@ -86,7 +90,7 @@
                         "ServiceBusConfig:FullyQualifiedNamespace": "[variables('serviceBusNamespace')]",
                         "ServiceBusConnection__fullyQualifiedNamespace": "[variables('serviceBusNamespace')]",
                         "AzureWebJobsStorage__accountName": "[parameters('sgName')]",
-                        "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[variables('storageAccountConnectionStringSecret')]",
+                        "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[parameters('storageAccountConnectionString')]",
                         "WEBSITE_CONTENTSHARE": "[toLower(parameters('functionAppName'))]",
                         "FUNCTIONS_EXTENSION_VERSION": "~3",
                         "APPINSIGHTS_INSTRUMENTATIONKEY": "[variables('appInsightsKeySecret')]",
@@ -130,7 +134,7 @@
                         "ServiceBusConfig:FullyQualifiedNamespace": "[variables('serviceBusNamespace')]",
                         "ServiceBusConnection__fullyQualifiedNamespace": "[variables('serviceBusNamespace')]",
                         "AzureWebJobsStorage__accountName": "[parameters('sgName')]",
-                        "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[variables('storageAccountConnectionStringSecret')]",
+                        "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING": "[parameters('storageAccountConnectionString')]",
                         "WEBSITE_CONTENTSHARE": "[toLower(parameters('functionAppName'))]",
                         "FUNCTIONS_EXTENSION_VERSION": "~3",
                         "APPINSIGHTS_INSTRUMENTATIONKEY": "[variables('appInsightsKeySecret')]",
