@@ -38,7 +38,7 @@ steps:
       scriptLocation: "inlineScript"
       inlineScript: |    
         az deployment group create `
-        --name "purchase-orders `
+        --name purchase-orders-$(Build.BuildNumber) `
         --resource-group "$(rgName)" `
         --template-file "$(Pipeline.Workspace)/deploy/main.bicep" `
         --parameters "buildNumber=$(Build.BuildNumber)" `
