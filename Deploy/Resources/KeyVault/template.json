@@ -17,8 +17,7 @@
     },
     "functions": [],
     "variables": {
-      "keyVaultName": "[concat('kv-', replace(parameters('functionAppName'),'-',''))]",
-      "deployedFunctionAppName": "[concat('fn-',parameters('functionAppName'))]"
+      "keyVaultName": "[concat('kv-', replace(parameters('functionAppName'),'-',''))]"      
     },
     "resources": [
       {
@@ -31,6 +30,7 @@
           "enabledForTemplateDeployment": true,
           "enabledForDiskEncryption": true,          
           "tenantId": "[subscription().tenantId]",
+          "accessPolicies": [],
           "sku": {
             "name": "standard",
             "family": "A"
