@@ -1,0 +1,50 @@
+parameters:
+  - name: buildNumber
+    type: string
+
+steps:
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: "Create resource group $(rgName)"
+    inputs:
+      deploymentScope: "Subscription"
+      azureResourceManagerConnection: "$(azureSubscription)"
+      location: "$(rgLocation)"
+      deploymentMode: "Incremental"
+      csmFile: "$(Pipeline.Workspace)/deploy/ResourceGroup/template.json"
+      csmParametersFile: "$(Pipeline.Workspace)/deploy/ResourceGroup/template.parameters.json"
+      overrideParameters: |
+        -rgName "$(rgName)" 
+        -rgLocation "$(rgLocation)" 
+        -createNewRg $(createNewRg) 
+        
+  - task: AzurePowerShell@4
+    displayName: "Delete old deployments"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: 'inlineScript'
+      azurePowerShellVersion: 'latestVersion'
+      inline: |        
+        $deployments = Get-AzResourceGroupDeployment -ResourceGroupName $(rgName) | Where-Object Timestamp -lt ((Get-Date).AddDays($(deploymentsOlderThan)))
+
+        foreach ($deployment in $deployments) {
+          Remove-AzResourceGroupDeployment -ResourceGroupName $(rgName) -Name $deployment.DeploymentName
+          Write-Host 'Removed Deployment: ' $deployment.DeploymentName 
+        } 
+
+  - task: AzureCLI@2
+    displayName: "Upload ARM templates and generate SAS token"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: "pscore"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        az storage account create -n "$(sharedStorageName)" -g "$(rgName)" -l "$(rgLocation)" 
+        az storage container create -n "$(sharedContainerName)" --account-name "$(sharedStorageName)" --auth-mode login 
+        $accountKey = (az storage account keys list -g "$(rgName)" -n "$(sharedStorageName)" | ConvertFrom-Json)[0].value
+        az storage blob upload-batch --source "$(Pipeline.Workspace)/deploy/" --pattern *.json --destination "$(sharedContainerName)" --account-name $(sharedStorageName) --account-key $accountKey
+
+        $expireTime = $(date -u -d '30 minutes' +%Y-%m-%dT%H:%MZ)
+        $connection = az storage account show-connection-string -g "$(rgName)" --name "$(sharedStorageName)" --query connectionString      
+        $token = az storage container generate-sas --name $(sharedContainerName) --expiry $expireTime --permissions r --output tsv --connection-string $connection
+
+        Write-Host "##vso[task.setvariable variable=storageSasToken]$token"

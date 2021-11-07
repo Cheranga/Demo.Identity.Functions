@@ -1,0 +1,27 @@
+variables:  
+  - name: environmentName
+    value: dev
+  - name: funcAppName
+    value: purchaseorders
+  - name: rgName
+    value: "rg-$(funcAppName)-$(environmentName)"
+  - name: rgLocation
+    value: Australia Southeast
+  - name: createNewRg
+    value: true
+  - name: deploymentsOlderThan
+    value: -1
+  - name: sharedStorageName
+    value: "sg$(funcAppName)$(environmentName)"
+  - name: sharedContainerName
+    value: armtemplates
+  - name: sgName
+    value: "sg$(funcAppName)$(environmentName)"    
+  - name: sgType
+    value: Standard_GRS    
+  - name: planName
+    value: "plan-$(funcAppName)-$(environmentName)"
+  - name: planSku
+    value: Y1        
+  - name: planTier
+    value: Dynamic
