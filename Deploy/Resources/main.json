@@ -1,7 +1,7 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {        
+    "parameters": {
         "templateSas": {
             "type": "securestring",
             "defaultValue": "TBD"
@@ -25,12 +25,25 @@
         "sgType": {
             "type": "string",
             "defaultValue": "TBD"
+        },
+        "planName": {
+            "type": "string",
+            "defaultValue": "TBD"
+        },
+        "planTier": {
+            "type": "string",
+            "defaultValue": "TBD"
+        },
+        "planSku": {
+            "type": "string",
+            "defaultValue": "TBD"
         }
     },
     "functions": [],
     "variables": {
         "templateUri": "[concat('https://',parameters('sharedStorageName'),'.blob.core.windows.net/',parameters('sharedStorageContainer'))]",
-        "storageAccountDeployment": "[concat(parameters('sgName'),'-',parameters('buildNumber'),'-deployment')]"
+        "storageAccountDeployment": "[concat(parameters('sgName'),'-',parameters('buildNumber'),'-deployment')]",
+        "aspDeployment": "[concat(parameters('planName'),'-',parameters('buildNumber'),'-deployment')]"
     },
     "resources": [
         {
@@ -43,12 +56,35 @@
                     "uri": "[concat(variables('templateUri'),'/StorageAccount/template.json','?', parameters('templateSas'))]",
                     "contentVersion": "1.0.0.0"
                 },
-                "parameters": {                    
+                "parameters": {
                     "sgName": {
                         "value": "[parameters('sgName')]"
                     },
                     "sgType": {
                         "value": "[parameters('sgType')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[variables('aspDeployment')]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('templateUri'),'/AppServicePlan/template.json','?', parameters('templateSas'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "planName": {
+                        "value": "[parameters('planName')]"
+                    },                    
+                    "planSku": {
+                        "value": "[parameters('planSku')]"
+                    },
+                    "planTier": {
+                        "value": "[parameters('planTier')]"
                     }
                 }
             }

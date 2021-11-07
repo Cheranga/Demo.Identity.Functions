@@ -66,4 +66,7 @@ steps:
         -sharedStorageContainer "$(sharedContainerName)" 
         -sgName "$(sgName)" 
         -sgType "$(sgType)" 
+        -planName "$(planName)" 
+        -planTier "$(planTier)" 
+        -planSku "$(planSku)" 
         
