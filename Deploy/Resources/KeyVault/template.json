@@ -17,7 +17,8 @@
     },
     "functions": [],
     "variables": {
-      "keyVaultName": "[concat('kv-', parameters('functionAppName'))]"
+      "keyVaultName": "[concat('kv-', parameters('functionAppName'))]",
+      "deployedFunctionAppName": "[concat('fn-',parameters('functionAppName'))]"
     },
     "resources": [
       {
@@ -30,7 +31,28 @@
           "enabledForTemplateDeployment": true,
           "enabledForDiskEncryption": true,          
           "tenantId": "[subscription().tenantId]",
-          "accessPolicies": [],
+          "accessPolicies": [
+          {            
+            "tenantId": "[subscription().tenantId]",           
+            "objectId": "[reference(resourceId('Microsoft.Web/sites', variables('deployedFunctionAppName')),'2019-08-01', 'full').identity.principalId]",
+            "permissions": {
+              "secrets": [
+                "get",
+                "list"
+              ]
+            }
+          },
+          {            
+            "tenantId": "[subscription().tenantId]",           
+            "objectId": "[reference(resourceId('Microsoft.Web/sites/slots', variables('deployedFunctionAppName'), 'Staging'),'2019-08-01', 'full').identity.principalId]",
+            "permissions": {
+              "secrets": [
+                "get",
+                "list"
+              ]
+            }
+          }
+        ],
           "sku": {
             "name": "standard",
             "family": "A"
