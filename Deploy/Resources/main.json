@@ -37,13 +37,18 @@
         "planSku": {
             "type": "string",
             "defaultValue": "TBD"
+        },
+        "funcAppName": {
+            "type": "string",
+            "defaultValue": "TBD"
         }
     },
     "functions": [],
     "variables": {
         "templateUri": "[concat('https://',parameters('sharedStorageName'),'.blob.core.windows.net/',parameters('sharedStorageContainer'))]",
         "storageAccountDeployment": "[concat(parameters('sgName'),'-',parameters('buildNumber'),'-deployment')]",
-        "aspDeployment": "[concat(parameters('planName'),'-',parameters('buildNumber'),'-deployment')]"
+        "aspDeployment": "[concat(parameters('planName'),'-',parameters('buildNumber'),'-deployment')]",
+        "appInsightsDeployment": "[concat(parameters('funcAppName'),'insights-',parameters('buildNumber'),'-deployment')]"
     },
     "resources": [
         {
@@ -85,6 +90,23 @@
                     },
                     "planTier": {
                         "value": "[parameters('planTier')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "[variables('appInsightsDeployment')]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('templateUri'),'/AppInsights/template.json','?', parameters('templateSas'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "insightsName": {
+                        "value": "[concat('ins-',parameters('funcAppName'))]"
                     }
                 }
             }
