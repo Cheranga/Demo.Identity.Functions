@@ -16,7 +16,7 @@ variables:
   - name: sharedContainerName
     value: "arm-templates-$(funcAppName)"
   - name: sgName
-    value: "sg$(funcAppName)$(environmentName)"    
+    value: "sgcc$(funcAppName)$(environmentName)"    
   - name: sgType
     value: Standard_GRS    
   - name: planName
