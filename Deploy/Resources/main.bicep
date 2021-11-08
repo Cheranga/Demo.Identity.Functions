@@ -44,7 +44,7 @@ var appInsName = 'ins-${functionAppName}-${environmentName}'
 
 // Storage account
 module storageAccountModule './StorageAccount/template.bicep' = {
-  name: 'storageAccount-${buildNumber}'
+  name: '${buildNumber}-storageaccount'
   params: {
     sgName: sgName
     sku: storageSku
@@ -54,7 +54,7 @@ module storageAccountModule './StorageAccount/template.bicep' = {
 
 // Application insights
 module appInsightsModule 'AppInsights/template.bicep' = {
-  name: 'app-insights-${buildNumber}'
+  name: '${buildNumber}-applicationinsights'
   params: {
     name: appInsName
   }
@@ -62,7 +62,7 @@ module appInsightsModule 'AppInsights/template.bicep' = {
 
 // Application service plan
 module aspModule 'AppServicePlan/template.bicep' = {
-  name: 'asp-${buildNumber}'
+  name: '${buildNumber}-applicationserviceplan'
   params: {
     name: aspName
     sku: planSku
@@ -72,7 +72,7 @@ module aspModule 'AppServicePlan/template.bicep' = {
 
 // Function app without settings
 module functionAppModule 'FunctionApp/template.bicep' = {
-  name: 'funcapp-${buildNumber}'
+  name: '${buildNumber}-functionapp'
   params: {
     name: 'fn-${functionAppName}-${environmentName}'
     planName: aspModule.outputs.planId
@@ -80,7 +80,7 @@ module functionAppModule 'FunctionApp/template.bicep' = {
 }
 
 module keyVaultModule 'KeyVault/template.bicep' = {
-  name: 'keyvault-${buildNumber}'
+  name: '${buildNumber}-keyvault'
   params: {
     appInsightsKey: appInsightsModule.outputs.appInsightsKey
     name: 'kv-${functionAppName}-${environmentName}'
@@ -91,7 +91,7 @@ module keyVaultModule 'KeyVault/template.bicep' = {
 }
 
 module functionAppSettingsModule 'FunctionAppSettings/template.bicep' = {
-  name: 'funcapp-settings-${buildNumber}'
+  name: '${buildNumber}-functionappsettings'
   params: {
     functionAppName: 'fn-${functionAppName}-${environmentName}'
     keyVaultName: 'kv-${functionAppName}-${environmentName}'
