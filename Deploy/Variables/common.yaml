@@ -28,6 +28,8 @@ variables:
     value: Y1        
   - name: planTier
     value: Dynamic
+  - name: commonRgName
+    value: rg-cc-platform
   - name: serviceBusNamespaceName
     value: sb-cc-platform
   - name: topicName
