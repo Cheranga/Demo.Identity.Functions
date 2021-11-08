@@ -31,6 +31,15 @@ param planSku string
 @description('Application service plan tier')
 param planTier string
 
+@description('ServiceBus namespace name')
+param serviceBusNamespaceName string
+
+@description('Topic name')
+param topicName string
+
+@description('Subscription name')
+param subscriptionName string
+
 var appInsName = 'ins-${functionAppName}-${environmentName}'
 
 // Storage account
@@ -52,7 +61,7 @@ module appInsightsModule 'AppInsights/template.bicep' = {
 }
 
 // Application service plan
-module aspModule 'AppServicePlan/template.bicep'= {
+module aspModule 'AppServicePlan/template.bicep' = {
   name: 'asp-${buildNumber}'
   params: {
     name: aspName
@@ -67,7 +76,7 @@ module functionAppModule 'FunctionApp/template.bicep' = {
   params: {
     name: 'fn-${functionAppName}-${environmentName}'
     planName: aspModule.outputs.planId
-  }  
+  }
 }
 
 module keyVaultModule 'KeyVault/template.bicep' = {
@@ -87,9 +96,12 @@ module functionAppSettingsModule 'FunctionAppSettings/template.bicep' = {
     functionAppName: 'fn-${functionAppName}-${environmentName}'
     keyVaultName: 'kv-${functionAppName}-${environmentName}'
     sgName: sgName
+    serviceBusNamespaceName: serviceBusNamespaceName
+    subscriptionName: subscriptionName
+    topicName: topicName
   }
-  dependsOn:[
-    storageAccountModule    
+  dependsOn: [
+    storageAccountModule
     appInsightsModule
     aspModule
     functionAppModule

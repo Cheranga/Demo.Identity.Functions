@@ -8,6 +8,15 @@ param keyVaultName string
 @description('Storage account name')
 param sgName string
 
+@description('ServiceBus namespace name')
+param serviceBusNamespaceName string
+
+@description('Topic name')
+param topicName string
+
+@description('Subscription name')
+param subscriptionName string
+
 var storageAccountConnectionStringSecret = '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}.vault.azure.net/secrets/storageAccountConnectionString/)'
 var appInsightsKeySecret = '@Microsoft.KeyVault(SecretUri=https://${keyVaultName}.vault.azure.net/secrets/appInsightsKey/)'
 var timeZone = 'AUS Eastern Standard Time'
@@ -31,10 +40,10 @@ resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
   name: '${functionAppName}/Staging/appsettings'
   properties:{
     CustomerApiKey: 'This is the staging setting'  
-    ServiceBusConfig__Topic: 'customer-orders'
-    ServiceBusConfig__Subscription: 'all'
-    ServiceBusConfig__FullyQualifiedNamespace: 'sb-cc-platform.servicebus.windows.net'
-    ServiceBusConnection__fullyQualifiedNamespace: 'sb-cc-platform.servicebus.windows.net'
+    ServiceBusConfig__Topic: topicName
+    ServiceBusConfig__Subscription: subscriptionName
+    ServiceBusConfig__FullyQualifiedNamespace: '${serviceBusNamespaceName}.servicebus.windows.net'
+    ServiceBusConnection__fullyQualifiedNamespace: '${serviceBusNamespaceName}.servicebus.windows.net'
     AzureWebJobsStorage__accountName: sgName
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionStringSecret
     WEBSITE_CONTENTSHARE: toLower(functionAppName)

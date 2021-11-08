@@ -49,7 +49,10 @@ steps:
         "environmentName=$(environmentName)" `
         "aspName=$(planName)" `
         "planSku=$(planSku)" `
-        "planTier=$(planTier)"
+        "planTier=$(planTier)" `
+        "serviceBusNamespaceName=$(serviceBusNamespaceName)" `
+        "topicName=$(topicName)" `
+        "subscriptionName=$(subscriptionName)"
 
   - task: AzureCLI@2
     displayName: "Setting RBAC in function app"
@@ -58,7 +61,7 @@ steps:
       scriptType: "pscore"
       scriptLocation: "inlineScript"
       inlineScript: |                        
-        $serviceBusTopicScope = "/subscriptions/$(subscriptionId)/resourceGroups/rg-cc-platform/providers/Microsoft.ServiceBus/namespaces/$(sbNamespace)/topics/$(sbTopic)"              
+        $serviceBusTopicScope = "/subscriptions/$(subscriptionId)/resourceGroups/rg-cc-platform/providers/Microsoft.ServiceBus/namespaces/$(serviceBusNamespaceName)/topics/$(topicName)"              
         $funcAppDeployment = "funcapp"+"-"+"${{parameters.buildNumber}}"
         
         $storageAccountDeployment = "storageAccount"+"-"+"${{parameters.buildNumber}}"        

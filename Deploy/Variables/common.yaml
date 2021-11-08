@@ -28,9 +28,11 @@ variables:
     value: Y1        
   - name: planTier
     value: Dynamic
-  - name: sbNamespace
+  - name: serviceBusNamespaceName
     value: sb-cc-platform
-  - name: sbTopic
+  - name: topicName
     value: customer-orders
+  - name: subscriptionName
+    value: all
 
     
