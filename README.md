@@ -69,3 +69,49 @@ In the deployed application the setting `ServiceBusConnection_fullyQualifiedName
     "value": "sb-cc-platform.servicebus.windows.net"
 }
 ```
+* Setting up configurations in local and deployed environments
+
+If you have structured configurations to be setup, you can separate the properties using ":" in your local environment.
+Whereas in the deployed environment they'll need to be separated using "__". See below
+
+__local.settings.json file__
+
+```
+"ServiceBusConfig:Topic": "customer-orders",
+"ServiceBusConfig:Subscription": "all",
+"ServiceBusConfig:FullyQualifiedNamespace": "sb-cc-platform.servicebus.windows.net",
+```
+
+But when you are deploying make sure the configurations are separated with two underscores
+
+```
+ServiceBusConfig__Topic: topicName
+ServiceBusConfig__Subscription: subscriptionName
+ServiceBusConfig__FullyQualifiedNamespace: '${serviceBusNamespaceName}.servicebus.windows.net'
+```
+
+If you are using these structured settings in your code, keep the ":"
+
+```c#
+[FunctionName(nameof(ProcessOrderFunction))]
+public async Task RunAsync([ServiceBusTrigger("%ServiceBusConfig:Topic%", "%ServiceBusConfig:Subscription%", Connection = "ServiceBusConnection")] ServiceBusReceivedMessage message)
+{
+    var messageContent = Encoding.UTF8.GetString(message.Body);
+
+    var purchaseOrder = JsonConvert.DeserializeObject<PurchaseOrder>(messageContent);
+    
+    _logger.LogInformation("Received purchase order: {@PurchaseOrder}", purchaseOrder);
+    await Task.Delay(TimeSpan.FromSeconds(2));
+}
+
+// and when registering configurations in dependency injection
+private void RegisterConfigurations(IServiceCollection services, IConfiguration configuration)
+{
+    services.Configure<ServiceBusConfig>(configuration.GetSection(nameof(ServiceBusConfig)));
+    services.AddSingleton(provider =>
+    {
+        var config = provider.GetRequiredService<IOptionsSnapshot<ServiceBusConfig>>().Value;
+        return config;
+    });
+}
+```
