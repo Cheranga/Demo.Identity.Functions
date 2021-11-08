@@ -37,6 +37,7 @@ resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
     ServiceBusConfig__Topic: 'customer-orders'
     ServiceBusConfig__Subscription: 'all'
     ServiceBusConfig__FullyQualifiedNamespace: 'sb-cc-platform.servicebus.windows.net'
+    ServiceBusConnection__fullyQualifiedNamespace: 'sb-cc-platform.servicebus.windows.net'
     AzureWebJobsStorage__accountName: sgName
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionStringSecret
     WEBSITE_CONTENTSHARE: toLower(functionAppName)
