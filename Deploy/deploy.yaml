@@ -73,4 +73,57 @@ steps:
 
         az role assignment create --role "Storage Blob Data Owner" --assignee $stagingSlotPrincipalId --scope $storageAccountResourceId
         az role assignment create --role "Azure Service Bus Data Receiver" --assignee $stagingSlotPrincipalId --scope $serviceBusTopicScope
-        az role assignment create --role "Azure Service Bus Data Sender" --assignee $stagingSlotPrincipalId --scope $serviceBusTopicScope            
+        az role assignment create --role "Azure Service Bus Data Sender" --assignee $stagingSlotPrincipalId --scope $serviceBusTopicScope  
+
+  - task: AzureAppServiceManage@0
+    displayName: "Stop Azure App Service (Staging)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      action: "Stop Azure App Service"
+      WebAppName: "$(funcAppName)"
+      resourceGroupName: "$(rgName)"
+      Slot: "Staging"
+      SpecifySlotOrASE: true
+
+  - task: AzureRmWebAppDeployment@4
+    displayName: "Deploy Azure Function App (Staging)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      appType: functionApp
+      WebAppName: "$(funcAppName)"
+      package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
+      enableCustomDeployment: true
+      DeploymentType: zipDeploy
+      JSONFiles: "**/host.json"
+      resourceGroupName: "$(rgName)"
+      deployToSlotOrASE: true
+      SlotName: "Staging"
+
+  - task: AzureAppServiceManage@0
+    displayName: "Start Azure App Service (Staging)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      action: "Start Azure App Service"
+      WebAppName: "$(funcAppName)"
+      resourceGroupName: "$(rgName)"
+      Slot: "Staging"
+      SpecifySlotOrASE: true
+
+  - task: AzureAppServiceManage@0
+    displayName: "Swap slots (Staging to Production)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      action: "Swap Slots"
+      WebAppName: "$(funcAppName)"
+      resourceGroupName: "$(rgName)"
+      SourceSlot: "staging"
+
+  - task: AzureAppServiceManage@0
+    displayName: "Stop Azure App Service (Staging)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      action: "Stop Azure App Service"
+      WebAppName: "$(funcAppName)"
+      resourceGroupName: "$(rgName)"
+      Slot: "Staging"
+      SpecifySlotOrASE: true        
