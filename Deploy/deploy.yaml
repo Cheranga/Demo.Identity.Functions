@@ -91,7 +91,7 @@ steps:
       azureSubscription: "$(azureSubscription)"
       appType: functionApp
       WebAppName: "fn-$(funcAppName)-$(environmentName)"
-      package: "$(Pipeline.Workspace)/drop/$(Build.BuildId).zip"
+      package: "$(Pipeline.Workspace)/funcapp/$(Build.BuildId).zip"
       enableCustomDeployment: true
       DeploymentType: zipDeploy
       JSONFiles: "**/host.json"
