@@ -22,6 +22,15 @@ param functionAppName string
 @description('Environment name')
 param environmentName string
 
+@description('Application service plan name')
+param aspName string
+
+@description('Application service plan SKU')
+param planSku string
+
+@description('Application service plan tier')
+param planTier string
+
 var appInsName = 'ins-${functionAppName}-${environmentName}'
 
 // Storage account
@@ -36,8 +45,18 @@ module storageAccountModule './StorageAccount/template.bicep' = {
 
 // Application insights
 module appInsightsModule 'AppInsights/template.bicep' = {
-  name: appInsName
+  name: 'app-insights-${buildNumber}'
   params: {
     name: appInsName
+  }
+}
+
+// Application service plan
+module aspModule 'AppServicePlan/template.bicep'= {
+  name: 'asp-${buildNumber}'
+  params: {
+    name: aspName
+    sku: planSku
+    tier: planTier
   }
 }

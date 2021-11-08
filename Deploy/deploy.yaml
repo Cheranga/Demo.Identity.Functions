@@ -46,7 +46,10 @@ steps:
         "storageSku=$(sgType)" `
         "storageSkuTier=$(sgTier)" `
         "functionAppName=$(funcAppName)" `
-        "environmentName=$(environmentName)"
+        "environmentName=$(environmentName)" `
+        "aspName=$(planName)" `
+        "planSku=$(planSku)" `
+        "planTier=$(planTier)"
 
 
         
