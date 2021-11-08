@@ -31,8 +31,5 @@ resource functionAppStagingSlot 'Microsoft.Web/sites/slots@2021-02-01' = {
   ]
 }
 
-
-output productionFunctionAppName string = functionAppProductionSlot.name
-output stagingFunctionAppName string = functionAppStagingSlot.name
 output productionPrincipalId string = functionAppProductionSlot.identity.principalId
 output stagingPrincipalId string = functionAppStagingSlot.identity.principalId
