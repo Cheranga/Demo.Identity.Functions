@@ -15,7 +15,15 @@ var timeZone = 'AUS Eastern Standard Time'
 resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
   name: '${functionAppName}/appsettings'
   properties:{
-    CustomerApiKey: 'This is the production setting'    
+    CustomerApiKey: 'This is the production setting'      
+    AzureWebJobsStorage__accountName: sgName
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionStringSecret
+    WEBSITE_CONTENTSHARE: toLower(functionAppName)
+    FUNCTIONS_EXTENSION_VERSION: '~3'
+    APPINSIGHTS_INSTRUMENTATIONKEY: appInsightsKeySecret
+    FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    WEBSITE_TIME_ZONE: timeZone
+    WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: 1  
   }
 }
 
