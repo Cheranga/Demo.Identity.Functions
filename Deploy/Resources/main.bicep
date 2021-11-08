@@ -67,5 +67,32 @@ module functionAppModule 'FunctionApp/template.bicep' = {
   params: {
     name: 'fn-${functionAppName}-${environmentName}'
     planName: aspModule.outputs.planId
+  }  
+}
+
+module keyVaultModule 'KeyVault/template.bicep' = {
+  name: 'keyvault-${buildNumber}'
+  params: {
+    appInsightsKey: appInsightsModule.outputs.appInsightsKey
+    name: 'kv-${functionAppName}-${environmentName}'
+    productionSlotPrincipalId: functionAppModule.outputs.productionPrincipalId
+    stagingSlotPrincipalId: functionAppModule.outputs.stagingPrincipalId
+    storageAccountConnectionString: storageAccountModule.outputs.storageAccountConnectionString
   }
+}
+
+module functionAppSettingsModule 'FunctionAppSettings/template.bicep' = {
+  name: 'funcapp-settings-${buildNumber}'
+  params: {
+    functionAppName: 'fn-${functionAppName}-${environmentName}'
+    keyVaultName: 'kv-${functionAppName}-${environmentName}'
+    sgName: sgName
+  }
+  dependsOn:[
+    storageAccountModule    
+    appInsightsModule
+    aspModule
+    functionAppModule
+    keyVaultModule
+  ]
 }
