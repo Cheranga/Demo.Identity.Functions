@@ -60,3 +60,12 @@ module aspModule 'AppServicePlan/template.bicep'= {
     tier: planTier
   }
 }
+
+// Function app without settings
+module functionAppModule 'FunctionApp/template.bicep' = {
+  name: 'funcapp-${buildNumber}'
+  params: {
+    name: 'fn-${functionAppName}-${environmentName}'
+    planName: aspModule.outputs.planId
+  }
+}
