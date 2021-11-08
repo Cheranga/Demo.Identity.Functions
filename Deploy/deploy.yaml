@@ -67,7 +67,26 @@ steps:
         $stagingSlotPrincipalId=$(az deployment group show -g "$(rgName)" -n "$funcAppDeployment" --query properties.outputs.stagingPrincipalId.value)
         
         az role assignment create --role "Storage Blob Data Owner" --assignee $productionSlotPrincipalId --scope $storageAccountResourceId
-        az role assignment create --role "Storage Blob Data Owner" --assignee $stagingSlotPrincipalId --scope $storageAccountResourceId        
+        az role assignment create --role "Storage Blob Data Owner" --assignee $stagingSlotPrincipalId --scope $storageAccountResourceId      
+        
+  - task: AzureCLI@2
+    displayName: "RBAC to function app to access the service bus topic"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: "pscore"
+      scriptLocation: "inlineScript"
+      inlineScript: |  
+        $serviceBusTopicScope = "/subscriptions/$(subscriptionId)/resourceGroups/rg-cc-platform/providers/Microsoft.ServiceBus/namespaces/$(sbNamespace)/topics/$(sbTopic)"              
+        $funcAppDeployment = "funcapp"+"-"+"${{parameters.buildNumber}}"
+
+        $productionSlotPrincipalId=$(az deployment group show -g "$(rgName)" -n "$funcAppDeployment" --query properties.outputs.productionPrincipalId.value)
+        $stagingSlotPrincipalId=$(az deployment group show -g "$(rgName)" -n "$funcAppDeployment" --query properties.outputs.stagingPrincipalId.value)
+        
+        az role assignment create --role "Azure Service Bus Data Receiver" --assignee $productionSlotPrincipalId --scope $serviceBusTopicScope
+        az role assignment create --role "Azure Service Bus Data Receiver" --assignee $stagingSlotPrincipalId --scope $serviceBusTopicScope            
+
+        az role assignment create --role "Azure Service Bus Data Sender" --assignee $productionSlotPrincipalId --scope $serviceBusTopicScope
+        az role assignment create --role "Azure Service Bus Data Sender" --assignee $stagingSlotPrincipalId --scope $serviceBusTopicScope            
 
 
         

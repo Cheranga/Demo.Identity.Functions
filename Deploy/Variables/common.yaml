@@ -1,4 +1,5 @@
 variables:  
+  - group: SharedGroup
   - name: environmentName
     value: dev
   - name: funcAppName
@@ -27,5 +28,9 @@ variables:
     value: Y1        
   - name: planTier
     value: Dynamic
+  - name: sbNamespace
+    value: sb-cc-platform
+  - name: sbTopic
+    value: customer-orders
 
     
