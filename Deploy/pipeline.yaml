@@ -1,4 +1,4 @@
-name: $(Date:yyyyMMdd).$(Rev:r)
+name: $(Date:yyyyMMddHHmm).$(Rev:r)
 
 trigger:
   batch: true
