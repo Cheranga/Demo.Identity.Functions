@@ -1,7 +1,5 @@
 variables:  
-  - group: SharedGroup
-  - name: environmentName
-    value: dev
+  - group: SharedGroup  
   - name: funcAppName
     value: purchaseorders
   - name: rgName

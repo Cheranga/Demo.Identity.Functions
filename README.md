@@ -1,5 +1,57 @@
 ### Using identity based connection in Azure functions
 
+* Azure functions using identity based connections
+
+In here you'll ne able to find how to configure the settings to avoid secrets. 
+
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-identity-based-connections-tutorial
+
+* Creating a service bus triggered Azure function app Microsoft reference
+
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-identity-based-connections-tutorial#use-managed-identity-for-azurewebjobsstorage-preview
+
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-identity-based-connections-tutorial-2#connect-to-service-bus-in-your-function-app
+
+* Service bus triggered Azure function configurations
+
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-trigger?tabs=csharp#connections
+
+* How to disable Azure functions
+
+https://docs.microsoft.com/en-us/azure/azure-functions/disable-function?tabs=portal#localsettingsjson
+
+* Azure functions developer guide about how to configure certain application settings
+
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference?tabs=blob#connections
+
+* Additional tutorials about using identity based connection in Azure functions
+
+https://www.rahulpnath.com/blog/getting-started-with-azure-functions/
+
+https://raunaknarooka.medium.com/make-life-simpler-use-managed-identities-part-1-ea9b89f888d8
+
+https://www.michaelscollier.com/azure-function-secretless-extensions-first-experience/
+
+* Using RIDER and managed identity issues. In here check the answer from `maartenba`
+
+https://github.com/JetBrains/azure-tools-for-intellij/issues/204
+
+* ARM template reference to add RBAC
+
+https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/scope-extension-resources
+
+https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-template
+
+* Using Azure CLI to assign RBAC
+
+Check `marc-sensenich` comment at the top.
+
+https://github.com/MicrosoftDocs/azure-docs/issues/39218
+
+* Output connection strings and keys from Bicep
+
+https://blog.johnnyreilly.com/2021/07/07/output-connection-strings-and-keys-from-azure-bicep/
+
 * `AzureFunctionsVersion` is case sensitive! It needs to be set to "v3".
 * Apps using the version 5 or higher in service bus extension use the `ServiceBusReceivedMessage`. This version drops support for the legact `Message` type.
 * Be specific about how the `DefaultAzureCredential` will be used. In here the code will only allow access through `Azure CLI` or through `Managed Identity`.
@@ -115,3 +167,12 @@ private void RegisterConfigurations(IServiceCollection services, IConfiguration 
     });
 }
 ```
+* Azure functions application settings reference
+
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-app-settings
+
+
+* Azure resource name constraints
+
+https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
+  
