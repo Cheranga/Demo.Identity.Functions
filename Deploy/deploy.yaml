@@ -55,7 +55,7 @@ steps:
         "subscriptionName=$(subscriptionName)"
 
   - task: AzureCLI@2
-    displayName: "Setting RBAC in function app"
+    displayName: "Setting RBAC"
     inputs:
       azureSubscription: "$(azureSubscription)"
       scriptType: "pscore"

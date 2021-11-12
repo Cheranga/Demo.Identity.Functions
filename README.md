@@ -5,6 +5,7 @@
 In here you'll ne able to find how to configure the settings to avoid secrets. 
 
 https://docs.microsoft.com/en-us/azure/azure-functions/functions-identity-based-connections-tutorial
+https://docs.microsoft.com/en-us/azure/azure-functions/functions-identity-based-connections-tutorial-2
 
 * Creating a service bus triggered Azure function app Microsoft reference
 

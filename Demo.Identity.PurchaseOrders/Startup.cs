@@ -56,7 +56,8 @@ namespace Demo.Identity.PurchaseOrders
                     ExcludeVisualStudioCredential = true,
                     ExcludeVisualStudioCodeCredential = true,
                     ExcludeAzurePowerShellCredential = true,
-                    ExcludeInteractiveBrowserCredential = true
+                    ExcludeInteractiveBrowserCredential = true,
+                    
                 }));
             });
         }
