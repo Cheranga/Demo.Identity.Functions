@@ -1,0 +1,38 @@
+variables:  
+  - group: SharedGroup  
+  - name: funcAppName
+    value: purchaseorders
+  - name: rgName
+    value: "rg-$(funcAppName)-$(environmentName)"
+  - name: rgLocation
+    value: Australia Southeast
+  - name: createNewRg
+    value: true
+  - name: deploymentsOlderThan
+    value: -1
+  - name: sharedStorageName
+    value: "sgccsharedpurorders$(environmentName)"
+  - name: sharedContainerName
+    value: "arm-templates-$(funcAppName)"
+  - name: sgName
+    value: "sgcc$(funcAppName)$(environmentName)"    
+  - name: sgType
+    value: Standard_GRS    
+  - name: sgTier
+    value: Standard
+  - name: planName
+    value: "plan-$(funcAppName)-$(environmentName)"
+  - name: planSku
+    value: Y1        
+  - name: planTier
+    value: Dynamic
+  - name: commonRgName
+    value: rg-cc-platform
+  - name: serviceBusNamespaceName
+    value: sb-cc-platform
+  - name: topicName
+    value: customer-orders
+  - name: subscriptionName
+    value: all
+
+    

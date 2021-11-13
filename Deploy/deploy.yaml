@@ -1,0 +1,132 @@
+parameters:
+  - name: buildNumber
+    type: string
+
+steps:
+  - task: AzureCLI@2    
+    displayName: "Create resource group"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: "pscore"
+      scriptLocation: "inlineScript"
+      inlineScript: |
+        $ifExists = az group exists -n "$(rgName)"
+        if ($ifExists -eq 'false') {
+          echo 'creating the resource group'
+          az group create -n "$(rgName)" -l "$(rgLocation)"
+        }  
+        
+  - task: AzurePowerShell@4
+    displayName: "Delete old deployments"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: 'inlineScript'
+      azurePowerShellVersion: 'latestVersion'
+      inline: |        
+        $deployments = Get-AzResourceGroupDeployment -ResourceGroupName $(rgName) | Where-Object Timestamp -lt ((Get-Date).AddDays($(deploymentsOlderThan)))
+
+        foreach ($deployment in $deployments) {
+          Remove-AzResourceGroupDeployment -ResourceGroupName $(rgName) -Name $deployment.DeploymentName
+          Write-Host 'Removed Deployment: ' $deployment.DeploymentName 
+        } 
+
+  - task: AzureCLI@2    
+    displayName: "Provision resources"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: "pscore"
+      scriptLocation: "inlineScript"
+      inlineScript: |    
+        az deployment group create `
+        --name $(Build.BuildNumber)-$(funcAppName) `
+        --resource-group "$(rgName)" `
+        --template-file "$(Pipeline.Workspace)/deploy/main.bicep" `
+        --parameters "buildNumber=$(Build.BuildNumber)" `
+        "sgName=$(sgName)" `
+        "storageSku=$(sgType)" `
+        "storageSkuTier=$(sgTier)" `
+        "functionAppName=$(funcAppName)" `
+        "environmentName=$(environmentName)" `
+        "aspName=$(planName)" `
+        "planSku=$(planSku)" `
+        "planTier=$(planTier)" `
+        "serviceBusNamespaceName=$(serviceBusNamespaceName)" `
+        "topicName=$(topicName)" `
+        "subscriptionName=$(subscriptionName)"
+
+  - task: AzureCLI@2
+    displayName: "Setting RBAC"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      scriptType: "pscore"
+      scriptLocation: "inlineScript"
+      inlineScript: |                        
+        $serviceBusTopicScope = "/subscriptions/$(subscriptionId)/resourceGroups/$(commonRgName)/providers/Microsoft.ServiceBus/namespaces/$(serviceBusNamespaceName)/topics/$(topicName)"              
+        $funcAppDeployment = "${{parameters.buildNumber}}"+"-functionapp"
+        
+        $storageAccountDeployment = "${{parameters.buildNumber}}"+"-storageaccount"
+        $storageAccountResourceId=$(az deployment group show -g "$(rgName)" -n "$storageAccountDeployment" --query properties.outputs.subsResourceId.value)        
+
+        $productionSlotPrincipalId=$(az deployment group show -g "$(rgName)" -n "$funcAppDeployment" --query properties.outputs.productionPrincipalId.value)
+        $stagingSlotPrincipalId=$(az deployment group show -g "$(rgName)" -n "$funcAppDeployment" --query properties.outputs.stagingPrincipalId.value)
+        
+        az role assignment create --role "Storage Blob Data Owner" --assignee $productionSlotPrincipalId --scope $storageAccountResourceId
+        az role assignment create --role "Azure Service Bus Data Receiver" --assignee $productionSlotPrincipalId --scope $serviceBusTopicScope
+        az role assignment create --role "Azure Service Bus Data Sender" --assignee $productionSlotPrincipalId --scope $serviceBusTopicScope
+
+        az role assignment create --role "Storage Blob Data Owner" --assignee $stagingSlotPrincipalId --scope $storageAccountResourceId
+        az role assignment create --role "Azure Service Bus Data Receiver" --assignee $stagingSlotPrincipalId --scope $serviceBusTopicScope
+        az role assignment create --role "Azure Service Bus Data Sender" --assignee $stagingSlotPrincipalId --scope $serviceBusTopicScope  
+
+  - task: AzureAppServiceManage@0
+    displayName: "Stop Azure App Service (Staging)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      action: "Stop Azure App Service"
+      WebAppName: "fn-$(funcAppName)-$(environmentName)"
+      resourceGroupName: "$(rgName)"
+      Slot: "Staging"
+      SpecifySlotOrASE: true
+
+  - task: AzureRmWebAppDeployment@4
+    displayName: "Deploy Azure Function App (Staging)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      appType: functionApp
+      WebAppName: "fn-$(funcAppName)-$(environmentName)"
+      package: "$(Pipeline.Workspace)/funcapp/$(Build.BuildId).zip"
+      enableCustomDeployment: true
+      DeploymentType: zipDeploy
+      JSONFiles: "**/host.json"
+      resourceGroupName: "$(rgName)"
+      deployToSlotOrASE: true
+      SlotName: "Staging"
+
+  - task: AzureAppServiceManage@0
+    displayName: "Start Azure App Service (Staging)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      action: "Start Azure App Service"
+      WebAppName: "fn-$(funcAppName)-$(environmentName)"
+      resourceGroupName: "$(rgName)"
+      Slot: "Staging"
+      SpecifySlotOrASE: true
+
+  - task: AzureAppServiceManage@0
+    displayName: "Swap slots (Staging to Production)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      action: "Swap Slots"
+      WebAppName: "fn-$(funcAppName)-$(environmentName)"
+      resourceGroupName: "$(rgName)"
+      SourceSlot: "staging"
+
+  - task: AzureAppServiceManage@0
+    displayName: "Stop Azure App Service (Staging)"
+    inputs:
+      azureSubscription: "$(azureSubscription)"
+      action: "Stop Azure App Service"
+      WebAppName: "fn-$(funcAppName)-$(environmentName)"
+      resourceGroupName: "$(rgName)"
+      Slot: "Staging"
+      SpecifySlotOrASE: true        

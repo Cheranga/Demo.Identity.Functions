@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Demo.Identity.PurchaseOrders.Infrastructure;
 using Demo.Identity.PurchaseOrders.Models;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
 namespace Demo.Identity.PurchaseOrders.Services
@@ -8,6 +9,8 @@ namespace Demo.Identity.PurchaseOrders.Services
     public interface IReceiveOrderRequestHandler
     {
         Task<bool> HandleAsync(PurchaseOrder order);
+
+        Task<bool> HandleAsync(PurchaseOrder order, IAsyncCollector<PurchaseOrder> messages);
     }
     
     public class ReceiveOrderRequestHandler : IReceiveOrderRequestHandler
@@ -25,6 +28,12 @@ namespace Demo.Identity.PurchaseOrders.Services
         {
             var operation = await _messagePublisher.PublishAsync(order);
             return operation;
+        }
+
+        public async Task<bool> HandleAsync(PurchaseOrder order, IAsyncCollector<PurchaseOrder> messages)
+        {
+            await messages.AddAsync(order);
+            return true;
         }
     }
 }
